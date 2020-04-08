@@ -32,29 +32,29 @@ def plot_countries(times1, data, desc, countries = ['France'], populations=None,
         daily_confirmed = pandemic._differentiate(_confirmed)
         axs[1].plot(times1[skip:], daily_confirmed, '--', marker='*', label=_c)
     ylab = '% of population' if _relative else "persons"
-    pandemic._decorate(axs[0], 'Total {}'.format(desc), ylab=ylab, legend=True)
-    pandemic._decorate(axs[1], 'Daily {}'.format(desc), ylab=ylab+' per day', legend=True)
+    pandemic._decorate(axs[0], 'Total {}'.format(desc), ylab=ylab, legend=True, ytickfmt='sci')
+    pandemic._decorate(axs[1], 'Daily {}'.format(desc), ylab=ylab+' per day', legend=True, ytickfmt='sci')
         
   
-def plot_world_chronogramms(times, df_conf, df_death):
-    plot_world(times, df_conf, 'confirmed cases', skip=30)
-    plot_world(times, df_death, 'death', skip=30)
+def plot_world_chronogramms(times, df_conf, df_death, skip):
+    plot_world(times, df_conf, 'confirmed cases', skip)
+    plot_world(times, df_death, 'death', skip)
 
-def main():
+def main(skip=37):
     if not os.path.exists(pandemic.data_dir) or '-update' in sys.argv: pandemic.clone_or_pull_dataset()
 
     times, df_conf, df_death, df_recovered = pandemic.load_dataset()
     pandemic.print_countries(df_conf)
 
-    if '-world' in sys.argv: plot_world_chronogramms(times, df_conf, df_death)
+    if '-world' in sys.argv: plot_world_chronogramms(times, df_conf, df_death, skip)
 
-    countries = ['France', 'Italy', 'United Kingdom', 'US', 'Spain', 'Germany']
+    countries = ['France', 'Italy', 'United Kingdom', 'US', 'Spain', 'Germany']#, 'China']
     #countries = ['France', 'Italy', 'US', 'Iran', 'Switzerland']
     #countries = ['France', 'United Kingdom']
     populations = pandemic.get_populations(countries) if '-relative' in sys.argv else None
     if '-countries' in sys.argv:
-        plot_countries(times, df_conf, 'confirmed cases', countries, populations, skip=30)
-        plot_countries(times, df_death,'death', countries, populations, skip=30)
+        plot_countries(times, df_conf, 'confirmed cases', countries, populations, skip)
+        plot_countries(times, df_death,'death', countries, populations, skip)
     
     plt.show()
 
